@@ -1,0 +1,178 @@
+{
+  "name": "MS-AutoTicketing",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "const html = $json.html || \"\";\n\nfunction decodeHtmlEntities(str) {\n  return str\n    .replace(/&ntilde;/gi, \"ñ\")\n    .replace(/&Ntilde;/gi, \"Ñ\");\n}\n\n// extract all <tr>\nconst rows = [...html.matchAll(/<tr[^>]*>([\\s\\S]*?)<\\/tr>/gi)]\n  .map(x => x[1]);\n\n// remove header\nrows.shift();\n\n// extract ANY <td> content\nconst out = rows.map(r => {\n  const cells = [...r.matchAll(/<td[^>]*>([\\s\\S]*?)<\\/td>/gi)]\n    .map(x =>\n      decodeHtmlEntities(\n        x[1]\n          .replace(/<[^>]+>/g, \"\")\n          .trim()\n      )\n    );\n\n  return {\n    DeviceName : cells[0] || \"\",\n    AlarmName  : cells[4] || \"\",\n    ReportedAt : cells[6] || \"\"\n  };\n});\n\nreturn out;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -128,
+        -576
+      ],
+      "id": "f1d64841-2538-4ab6-a65f-7c5d3c3d4a71",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1cQF28y6zqRSTnrMVmbP80C41c6jTGVba2d0P6yt8h6s",
+          "mode": "list",
+          "cachedResultName": "N8N MS-MASTER DATABASE",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cQF28y6zqRSTnrMVmbP80C41c6jTGVba2d0P6yt8h6s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 69865055,
+          "mode": "list",
+          "cachedResultName": "MASTER DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1G1rbaJ1JcpmNZI_mMW9FR9reqbSmmCd_bykZ1T27_MU/edit#gid=69865055"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "DEVICE NAME",
+              "lookupValue": "={{$json[\"DeviceName\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        96,
+        -576
+      ],
+      "id": "4c3f6e89-5183-455b-b545-64a11fbeef9c",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1i1tpEXYZjDu6amt",
+          "name": "Google Sheets account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{$json[\"TO\"]}}",
+        "subject": "=[GNFO-MNS] PROACTIVE | {{$json[\"DEVICE NAME\"]}} | Monitored as DOWN : {{$node[\"Code in JavaScript\"].json[\"ReportedAt\"]}}",
+        "message": "=<p style=\"font-family:Calibri, Arial, sans-serif; font-size:12.5px; color:#000; margin:0 0 6px;\">\n  Hi Team,\n</p>\n\n<p style=\"font-family:Calibri, Arial, sans-serif; font-size:12.5px; color:#000; margin:0 0 14px;\">\n  Good morning, for creation of ticket and for your further checking.\n</p>\n\n<!-- 🟩 Dark Card-style Details -->\n<div style=\"\n  display:inline-block;\n  font-family:Calibri, Arial, sans-serif;\n  font-size:12.5px;\n  background:#1a1a1a;\n  color:#ffffff;\n  border-radius:8px;\n  padding:14px 18px;\n  margin-bottom:16px;\n  max-width:100%;\n  width:auto;\n  height:auto;\n  word-wrap:break-word;\n  box-sizing:border-box;\n  box-shadow:0 0 10px rgba(0,195,137,0.25);\n  border:1px solid rgba(0,195,137,0.3);\n\">\n  <p style=\"margin:0 0 6px;\"><strong style=\"color:#00C389;\">Site Name:</strong> {{$json[\"DEVICE NAME\"]}}</p>\n  <p style=\"margin:0 0 6px;\"><strong style=\"color:#00C389;\">Account Number:</strong> {{$json[\"ACCOUNT NUMBER\"]}}</p>\n  <p style=\"margin:0 0 6px;\"><strong style=\"color:#00C389;\">Circuit ID:</strong> {{$json[\"CID\"]}}</p>\n  <p style=\"margin:0 0 6px;\"><strong style=\"color:#00C389;\">SN:</strong> {{$json[\"SERIAL\"]}}</p>\n  <p style=\"margin:0 0 6px;\"><strong style=\"color:#00C389;\">Termination:</strong> {{$json[\"TERMINATION\"]}}</p>\n<p style=\"margin:0 0 6px;\"><strong style=\"color:#00C389;\">POC:</strong> {{$json[\"POC\"]}}</p>\n<p style=\"margin:0 0 6px;\"><strong style=\"color:#00C389;\">Contact No.:</strong> {{$json[\"CONTACT NO.\"]}}</p>\n<p style=\"margin:0 0 6px;\"><strong style=\"color:#00C389;\">Address:</strong> {{$json[\"ADDRESS\"]}}</p> \n\n  <!-- 🔔 Issue from JavaScript parsing -->\n  <p style=\"margin:0;\">\n    <strong style=\"color:#00C389;\">Issue:</strong>\n    {{$node[\"Code in JavaScript\"].json[\"AlarmName\"]}}\n  </p>\n</div>\n\n<!-- 🖊️ Closing -->\n<p style=\"font-family:Calibri, Arial, sans-serif; font-size:12.5px; color:#000; margin:16px 0 6px;\">\n  Thank you.\n</p>\n\n<p style=\"font-family:Calibri, Arial, sans-serif; font-size:12.5px; color:#000; margin:0;\">\n  Regards,<br>\n\n  <!-- Only this line is in Converge Green -->\n  <span style=\"font-weight:600; color:#00C389;\">Managed Services Proactive Monitoring</span><br>\n\n  Global Network Fulfillment &amp; Ops – Managed Services Group<br>\n\n  <a href=\"mailto:enhancementservices@convergeict.com\" style=\"color:#0563c1; text-decoration:underline;\">\n    enhancementservices@convergeict.com\n  </a><br>\n\n  <a href=\"https://www.convergeict.com\" style=\"color:#0563c1; text-decoration:underline;\">www.convergeict.com</a> |\n  <a href=\"https://www.facebook.com/ConvergeICTOfficial\" style=\"color:#0563c1; text-decoration:underline;\">\n    facebook.com/ConvergeICTOfficial\n  </a><br>\n\n  Reliance IT Center, #99 E. Rodriguez Jr. Avenue, Ugong, Pasig City\n</p>\n\n<p style=\"margin-top:8px;\">\n  <img src=\"https://drive.google.com/uc?export=view&id=1NUQPE6FcnThPZPIpt36jeuU0-pvhftQ7\" \n       alt=\"Converge Logo\" width=\"110\" style=\"vertical-align:middle; margin-right:10px;\">\n  <img src=\"https://drive.google.com/uc?export=view&id=1-rHVYhS7f7Cv7vkh8LSaeDBJekXvZQqq\" \n       alt=\"Managed Services Logo\" width=\"140\" style=\"vertical-align:middle;\">\n</p>\n",
+        "options": {
+          "ccList": "={{$json[\"CC\"]}}"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        320,
+        -576
+      ],
+      "id": "e0225543-3043-45e7-a90c-a662fa03b500",
+      "name": "Send a message",
+      "webhookId": "16fb0358-a11d-46b5-9143-9eeb930673d0",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "y7aUz9q2vlpdIIfd",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "labelIds": [
+            "Label_913910759686595588"
+          ],
+          "readStatus": "unread"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -352,
+        -576
+      ],
+      "id": "768e84be-0894-4ee3-a0f5-603882d89053",
+      "name": "Device Offline",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "y7aUz9q2vlpdIIfd",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Device Offline": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f7709028-6df1-4a5e-a08e-36b7ecf90629",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a0b6b1fb8b9630230695a625881eb8f515c3ece4338c3f4434847dcff8fe9deb"
+  },
+  "id": "fR4d2bakM2CKplE8",
+  "tags": [
+    {
+      "updatedAt": "2025-11-19T07:48:04.466Z",
+      "createdAt": "2025-11-19T07:48:04.466Z",
+      "id": "QYRwDWeYoIIQj8Y8",
+      "name": "NAIA"
+    },
+    {
+      "updatedAt": "2025-11-19T07:43:02.034Z",
+      "createdAt": "2025-11-19T07:43:02.034Z",
+      "id": "aYKc9tiWbfqTWsbp",
+      "name": "Device Offline"
+    }
+  ]
+}

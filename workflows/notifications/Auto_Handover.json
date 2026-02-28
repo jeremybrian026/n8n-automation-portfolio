@@ -1,0 +1,164 @@
+{
+  "name": "Auto Handover",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "labelIds": [
+            "Label_5771018582444071131"
+          ],
+          "readStatus": "unread"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -160,
+        -144
+      ],
+      "id": "fac8c7d1-a459-4236-9eec-08474c6062c7",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "y7aUz9q2vlpdIIfd",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4e47b9cb-0bf3-4fd5-9747-d7eb8223469b",
+              "name": "reference",
+              "value": "={{ \"SF-\" + ($json.subject.match(/^\\d+/) || [''])[0] }}\n",
+              "type": "string"
+            },
+            {
+              "id": "f9857bb5-f75e-4676-a6a0-b25c7dc89a64",
+              "name": "description",
+              "value": "={{ $json.subject.replace(/^\\d+\\s*-\\s*/, '').trim() }}\n",
+              "type": "string"
+            },
+            {
+              "id": "dba352a3-1605-4105-8049-1d330abe1e86",
+              "name": "issue",
+              "value": "={{\n  [\n    \"Link Down\",\n    \"Interface Down\",\n    \"Managed Device Down\",\n    \"ONU LOS\",\n    \"Intermittent\",\n    \"High Latency\",\n    \"Dying Gasps\",\n    \"Technical Query\"\n  ].includes($json.subject.split(\"|\").pop().trim())\n  ? $json.subject.split(\"|\").pop().trim()\n  : \"Others\"\n}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        48,
+        -144
+      ],
+      "id": "4c187b12-f5dc-4ebc-9a74-6c6cacb0f940",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "2c798744-5d6e-800c-87f7-cb64dc4ed320",
+          "mode": "list",
+          "cachedResultName": "Daily Operations - Handover",
+          "cachedResultUrl": "https://www.notion.so/2c7987445d6e800c87f7cb64dc4ed320"
+        },
+        "title": "Handover Entry",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Reference|title",
+              "title": "={{$json.reference}}"
+            },
+            {
+              "key": "Description|rich_text",
+              "textContent": "={{$json.description}}"
+            },
+            {
+              "key": "Status|select",
+              "selectValue": "Pending"
+            },
+            {
+              "key": "Issue|select",
+              "selectValue": "={{$json.issue}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        240,
+        -144
+      ],
+      "id": "e2dec205-983e-47b3-9f4d-632df385a6ff",
+      "name": "Create a database page",
+      "credentials": {
+        "notionApi": {
+          "id": "VKLovVzW4zGPOSgQ",
+          "name": "n8n auto handover"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Create a database page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "870a9279-4341-4c59-8fc1-4d01154c863e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a0b6b1fb8b9630230695a625881eb8f515c3ece4338c3f4434847dcff8fe9deb"
+  },
+  "id": "fLkKFSSodlO3m3FA",
+  "tags": [
+    {
+      "updatedAt": "2025-11-20T04:18:16.989Z",
+      "createdAt": "2025-11-20T04:18:16.989Z",
+      "id": "JY6xUGHcXE5kl1Zb",
+      "name": "Database"
+    }
+  ]
+}
