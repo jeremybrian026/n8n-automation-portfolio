@@ -1,0 +1,152 @@
+{
+  "name": "Database v2",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "ms-db-v2",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "354720a8-b453-4c49-a31c-e6d1cc9d290e",
+      "name": "Webhook",
+      "webhookId": "456693cf-5ec7-4f70-a472-1843fa04832e"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ",
+          "mode": "list",
+          "cachedResultName": "Sites Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "MASTER LIST",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ/edit#gid=0"
+        },
+        "options": {
+          "dataLocationOnSheet": {
+            "values": {
+              "rangeDefinition": "detectAutomatically"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "0d983a2e-369b-403e-a8d9-cd322722596e",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1i1tpEXYZjDu6amt",
+          "name": "Google Sheets account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get all rows from Google Sheets\nconst rows = items.map(item => item.json);\n\n// Group rows by CLIENT name\nconst grouped = {};\n\nrows.forEach(row => {\n  const client = row['CLIENT'] || 'UNKNOWN';\n  \n  if (!grouped[client]) {\n    grouped[client] = [];\n  }\n  \n  grouped[client].push({\n    STATUS:              row['STATUS']              || '',\n    'ACCOUNT NUMBER':    row['ACCOUNT NUMBER']      || '',\n    CID:                 row['CID']                 || '',\n    'ONU SN':            row['ONU SN']              || '',\n    'SITE NAME':         row['SITE NAME']           || '',\n    CLIENT:              row['CLIENT']              || '',\n    'SITE ADDRESS':      row['SITE ADDRESS']        || '',\n    'DEVICE MODEL':      row['DEVICE MODEL']        || '',\n    SERIAL:              row['SERIAL']              || '',\n    MODEL:               row['MODEL']               || '',\n    'IP BLOCK':          row['IP BLOCK']            || '',\n    'WAN PARENT SUBNET': row['WAN PARENT SUBNET']   || '',\n    VLAN:                row['VLAN']                || '',\n    TERMINATION:         row['TERMINATION']         || '',\n    DEVICE:              row['DEVICE']              || '',\n    'NPE UPLINK':        row['NPE UPLINK']          || '',\n    'NPE REMOTE IP':     row['NPE REMOTE IP']       || '',\n    'GLOBE CIRCUIT ID':  row['GLOBE CIRCUIT ID']    || '',\n    PLAN:                row['PLAN']                || '',\n    POC:                 row['POC']                 || '',\n    CONTACT:             row['CONTACT']             || '',\n  });\n});\n\n// Return as single item\nreturn [{ json: grouped }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "0da708da-a77b-4c1a-be43-9ff6ac2b7b0f",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($input.first().json) }}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        624,
+        0
+      ],
+      "id": "5805389c-b5fb-4a53-8942-7a47d14b476c",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "3fafc983-779f-4315-91e8-a0f4677e7674",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a0b6b1fb8b9630230695a625881eb8f515c3ece4338c3f4434847dcff8fe9deb"
+  },
+  "id": "usPkYqnWWRzSKaryzhhdI",
+  "tags": []
+}

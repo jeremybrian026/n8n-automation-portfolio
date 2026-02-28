@@ -1,0 +1,74 @@
+# n8n specific
+.n8n/
+*.db
+*.sqlite
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Credentials - NEVER commit
+credentials.json
+service-account.json
+*-credentials.json
+config.json
+
+# Confidential data
+**/confidential/
+**/private/
+client-data/
+sensitive-info.txt
+
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.backup
+
+# Build files
+dist/
+build/
+out/
+
+# Testing
+coverage/
+.nyc_output/
+test-results/
+
+# Backup files
+*-backup.json
+backup/
+
+# Personal notes
+notes.txt
+TODO.txt
+scratch.md
