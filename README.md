@@ -8,6 +8,8 @@ A comprehensive collection of n8n workflows for automating enterprise IT operati
 
 This automation suite was designed to streamline IT operations by automating repetitive tasks, reducing response times, and improving operational efficiency. The workflows integrate multiple systems including email, databases, and project management tools to create seamless automated processes.
 
+> **Note**: Workflow files have been removed to protect proprietary information. The project architecture, technical approach, and code samples are documented in PORTFOLIO.md and throughout this README.
+
 ## 📊 Key Achievements
 
 - **70% reduction** in manual ticket creation time
