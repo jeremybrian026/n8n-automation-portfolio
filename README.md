@@ -424,7 +424,7 @@ MIT License - See [LICENSE](LICENSE) file for details
 ## 👤 Author
 
 **Jeremy Brian Padayhag**
-- LinkedIn: [linkedin.com/in/jeremy-brian-padayhag-6b3260196](https://www.linkedin.com/in/jeremy-brian-padayhag-6b3260196/)
+- LinkedIn: [linkedin.com/in/jeremy-brian](https://www.linkedin.com/in/jeremy-brian-padayhag-6b3260196/](https://www.linkedin.com/in/jeremy-brian/)
 - GitHub: [@jeremybrian026](https://github.com/jeremybrian026)
 - Email: jeremybrian034@gmail.com
 
@@ -438,7 +438,7 @@ MIT License - See [LICENSE](LICENSE) file for details
 
 For questions or collaboration opportunities:
 - Email: jeremybrian034@gmail.com
-- LinkedIn: [Jeremy Brian Padayhag](https://linkedin.com/in/jeremy-brian-padayhag-6b3260196)
+- LinkedIn: [linkedin.com/in/jeremy-brian](https://www.linkedin.com/in/jeremy-brian-padayhag-6b3260196/](https://www.linkedin.com/in/jeremy-brian/)
 
 ---
 
